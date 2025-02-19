@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace NewsManagementSystem_Assigment01
 {
     public class Program
@@ -8,6 +10,13 @@ namespace NewsManagementSystem_Assigment01
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddDbContext<FunewsManagementContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("FUNewsManagement"));
+            });
+
+            //builder.Configuration.SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
             var app = builder.Build();
 
