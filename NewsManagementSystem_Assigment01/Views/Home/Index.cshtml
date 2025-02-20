@@ -1,8 +1,64 @@
-﻿@{
+﻿@model NewsManagementSystem_Assigment01.ViewModel.NewsListViewModel
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
+@* <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div> *@
+
+
+
+<div class="news-list">
+    <h1>Danh sách tin tức</h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Tiêu đề</th>
+                <th scope="col">Ngày cập nhật</th>
+                <th scope="col">Link</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.NewsItems != null && Model.NewsItems.Any())
+            {
+                int index = 1;
+                foreach (var item in Model.NewsItems)
+                {
+                    <tr>
+                        <th scope="row">@index</th>
+                        <td>@item.NewsTitle</td>
+                        <td>@item.ModifiedDate?.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td style="white-space: nowrap;">
+                            <a asp-controller="News" asp-action="Details" asp-route-id="">Chi tiết</a>
+                        </td>
+
+                    </tr>
+                    index++;
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="3" class="text-center">Không có tin tức nào.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>
+
+<style>
+    .news-list {
+        margin: 20px auto;
+        max-width: 800px;
+    }
+
+        .news-list h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+</style>
+

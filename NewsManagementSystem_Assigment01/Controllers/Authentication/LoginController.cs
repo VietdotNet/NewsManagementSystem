@@ -8,62 +8,104 @@ using NewsManagementSystem_Assigment01.Models;
 using System.Security.Claims;
 using NewsManagementSystem_Assigment01.ViewModel;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Principal;
 
 namespace NewsManagementSystem_Assigment01.Controllers.Authentication
 {
     public class LoginController : Controller
     {
         private readonly IConfiguration _config;
-        private readonly SignInManager<SystemAccount> _signInManager;
-        private readonly UserManager<SystemAccount> _userManager;
         private readonly ILogger<LoginController> _logger;
+        private readonly FunewsManagementContext _context;
 
-        public LoginController(IConfiguration config, SignInManager<SystemAccount> signInManager, UserManager<SystemAccount> userManager, ILogger<LoginController> logger)
+        public LoginController(IConfiguration config, ILogger<LoginController> logger, FunewsManagementContext context)
         {
             _config = config;
-            _signInManager = signInManager;
-            _userManager = userManager;
             _logger = logger;
+            _context = context;
         }
-        [HttpGet]
+
         public IActionResult Index()
         {
-            return View("SignInAsync");
+            return View("SignIn");
         }
+
         [HttpPost]
-        //Khi user đăng nhập sẽ gọi hàm này
         public async Task<IActionResult> SignInAsync(LoginViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                _logger.LogError("ModelState is valid");
+                _logger.LogError("ModelState is invalid");
                 return View(model);
             }
 
-            // 1) Check if this is the Admin from appsettings.json
-            var adminEmail = _config["AdminAccount:Email"];
-            var adminPassword = _config["AdminAccount:Password"];
+            var adminConfig = _config.GetSection("AdminAccount");
+            string adminEmail = adminConfig["Email"];
+            string adminPassword = adminConfig["Password"];
 
             if (model.Email == adminEmail && model.Password == adminPassword)
             {
-                // Build claims for Admin
+                //Tạo ra list Claims(Các thông tin người dùng đang đăng nhập vào hệ thống) -> xác thực người dùng này là ai, có vai trò gì...
                 var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, model.Email),
-                new Claim(ClaimTypes.Email, model.Email),
-                new Claim(ClaimTypes.Role, "Admin")
-            };
+                {
+                    new Claim(ClaimTypes.Name, "Admin"),
+                    new Claim(ClaimTypes.Email, model.Email),
+                    new Claim(ClaimTypes.Role, "Admin")
+                };
 
-                // Create identity and sign in
+                //Lưu trữ list Claims trong CookieAuthentication
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var principal = new ClaimsPrincipal(identity);
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
-                return RedirectToAction("Index", "Home");
+                //Thực hiện đăng nhập dựa trên Claims
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(identity));
+
+                return RedirectToAction("SecurePage");
             }
-            // 3) If neither Admin nor valid staff/lecturer, return error
-            ModelState.AddModelError("", "Invalid Email or Password");
-            return View(model);
+
+            var user = _context.SystemAccounts.Where(x => (x.AccountEmail == model.Email) && (x.AccountPassword == model.Password)).FirstOrDefault();
+            if (user != null)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, user.AccountName),
+                    new Claim(ClaimTypes.Email, user.AccountEmail),
+                    new Claim(ClaimTypes.Role, user.AccountRole.ToString()),
+                    new Claim(ClaimTypes.NameIdentifier, user.AccountId.ToString())
+                };
+                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(identity));
+
+                return RedirectToAction("SecurePage");
+            }
+            else
+            {
+                _logger.LogWarning("Đăng nhập thất bại: Sai email hoặc mật khẩu.");
+                ModelState.AddModelError(string.Empty, "Email hoặc mật khẩu không đúng!");
+                return View(model);
+            }
         }
+
+        [Authorize]
+        public IActionResult SecurePage()
+        {
+            ViewBag.Name = HttpContext.User.Identity.Name;
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LogOutAsync()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index");
+        }
+
+
+
+
     }
 }

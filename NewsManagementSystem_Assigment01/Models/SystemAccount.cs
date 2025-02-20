@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace NewsManagementSystem_Assigment01.Models;
 
-public partial class SystemAccount : IdentityUser
+public partial class SystemAccount
 {
     public short AccountId { get; set; }
 

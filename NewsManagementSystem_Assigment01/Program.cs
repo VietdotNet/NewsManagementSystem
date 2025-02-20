@@ -20,42 +20,29 @@ namespace NewsManagementSystem_Assigment01
                 options.UseSqlServer(builder.Configuration.GetConnectionString("FUNewsManagement"));
             });
 
-            builder.Services.AddIdentity<SystemAccount, IdentityRole>()
-                .AddEntityFrameworkStores<FunewsManagementContext>()
-                .AddDefaultTokenProviders();
-
-            builder.Services.Configure<SystemAccount>(builder.Configuration.GetSection("AdminAccount"));
-
-            //Cookie Authentication
-            //builder.Services.ConfigureApplicationCookie(options =>
-            //{
-            //    // Cookie settings
-            //    options.Cookie.HttpOnly = true;
-            //    options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
-            //    //Khi người dùng chưa xác thực
-            //    options.LoginPath = "/SignIn";
-            //    options.LogoutPath = "/Logout";
-            //    //Khi user chọn vào chức năng phải yêu cầu đăng nhập
-            //    options.AccessDeniedPath = "/Login";
-            //    // Gia hạn cookie nếu còn hoạt động
-            //    options.SlidingExpiration = true;
-            //});
-
             // 3) Add Authentication with Cookies
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
-                    options.LoginPath = "/Account/Login";        // Where to redirect if not logged in
-                    options.AccessDeniedPath = "/Account/AccessDenied"; // Where to redirect if user doesn’t have permission
+                    options.LoginPath = "/Login/Index";  // Trang đăng nhập
+                    options.AccessDeniedPath = "/Home/AccessDenied"; // Trang bị từ chối
+                    options.Cookie.HttpOnly = true;
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(100);
+                    // Gia hạn cookie nếu còn hoạt động
+                    options.SlidingExpiration = true;
                 });
 
-            builder.Services.AddAuthorization(options =>
-            {
-                // Example policies if you want to use policy-based approach
-                options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
-                options.AddPolicy("Staff", policy => policy.RequireRole("Staff"));
-                options.AddPolicy("Lecturer", policy => policy.RequireRole("Lecturer"));
-            });
+            //builder.Services.AddIdentity<SystemAccount, IdentityRole>()
+            //    .AddEntityFrameworkStores<FunewsManagementContext>()
+            //    .AddDefaultTokenProviders();
+
+            //builder.Services.AddAuthorization(options =>
+            //{
+            //    // Example policies if you want to use policy-based approach
+            //    options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
+            //    options.AddPolicy("Staff", policy => policy.RequireRole("Staff"));
+            //    options.AddPolicy("Lecturer", policy => policy.RequireRole("Lecturer"));
+            //});
 
             var app = builder.Build();
 
@@ -71,6 +58,7 @@ namespace NewsManagementSystem_Assigment01
             app.UseStaticFiles();
 
             app.UseRouting();
+
             app.UseAuthentication();
             app.UseAuthorization();
 
