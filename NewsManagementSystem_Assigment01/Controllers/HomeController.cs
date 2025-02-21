@@ -22,6 +22,7 @@ namespace NewsManagementSystem_Assigment01.Controllers
             var newsItems = _context.NewsArticles
                 .Select(n => new NewsItemViewModel
                 {
+                    NewsArticleId = n.NewsArticleId,
                     NewsTitle = n.NewsTitle,
                     ModifiedDate = n.ModifiedDate
                 })

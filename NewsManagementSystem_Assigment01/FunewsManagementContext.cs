@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using NewsManagementSystem_Assigment01.Models;
+using NewsManagementSystem_Assigment01.ViewModel;
 
 namespace NewsManagementSystem_Assigment01;
 
@@ -123,4 +124,6 @@ public partial class FunewsManagementContext : DbContext
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+public DbSet<NewsManagementSystem_Assigment01.ViewModel.NewsArticleViewModel> NewsArticleViewModel { get; set; } = default!;
 }

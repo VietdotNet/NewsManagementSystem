@@ -1,4 +1,5 @@
 ﻿@model NewsManagementSystem_Assigment01.ViewModel.NewsListViewModel
+@using System.Security.Claims
 
 @{
     ViewData["Title"] = "Home Page";
@@ -20,6 +21,11 @@
                 <th scope="col">Tiêu đề</th>
                 <th scope="col">Ngày cập nhật</th>
                 <th scope="col">Link</th>
+                @if (User.FindFirstValue(ClaimTypes.Role) == "1")
+                {
+                    <th scope="col">Chỉnh sửa</th>
+                    <th scope="col">Xóa</th>
+                }           
             </tr>
         </thead>
         <tbody>
@@ -35,6 +41,19 @@
                         <td style="white-space: nowrap;">
                             <a asp-controller="News" asp-action="Details" asp-route-id="">Chi tiết</a>
                         </td>
+                        @if (User.FindFirstValue(ClaimTypes.Role) == "1")
+                        {
+                            <td style="white-space: nowrap;">
+                                <a asp-controller="News" asp-action="Edit" asp-route-id="@item.NewsArticleId" class="btn btn-primary">Chỉnh sửa</a>
+                            </td>
+                            <td style="white-space: nowrap;">
+                                <form asp-controller="News" asp-action="Delete" asp-route-id="@item.NewsArticleId" method="post"
+                                      onsubmit="return confirm('Bạn có chắc muốn xóa không?');">
+                                    <button type="submit" class="btn btn-danger">Xóa</button>
+                                </form>
+                            </td>
+
+                        }
 
                     </tr>
                     index++;
