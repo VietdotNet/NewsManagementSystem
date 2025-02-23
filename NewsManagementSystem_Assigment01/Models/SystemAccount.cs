@@ -18,5 +18,7 @@ public partial class SystemAccount
     [Display(Name = "Mật khẩu")]
     public string? AccountPassword { get; set; }
 
+    public bool IsActive { get; set; } = true;
+
     public virtual ICollection<NewsArticle> NewsArticles { get; set; } = new List<NewsArticle>();
 }

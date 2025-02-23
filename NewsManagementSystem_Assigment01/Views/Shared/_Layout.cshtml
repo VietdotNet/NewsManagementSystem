@@ -28,10 +28,16 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a>
                         </li>
 
-                        @if (User.FindFirstValue(ClaimTypes.NameIdentifier) == "3")
+                        @if (User.FindFirstValue(ClaimTypes.Role) == "1")
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="News" asp-action="Create">Tạo bài viết tin tức</a>
+                                <a class="nav-link text-dark" asp-controller="News" asp-action="Create">Tạo bài viết tin tức</a>
+                            </li>
+                        }
+                        @if (User.FindFirstValue(ClaimTypes.Role) == "Admin")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Admin" asp-action="ManageUser">Quản lý người dùng</a>
                             </li>
                         }
                         

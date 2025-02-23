@@ -26,7 +26,14 @@ public partial class FunewsManagementContext : DbContext
     public virtual DbSet<Tag> Tags { get; set; }
 
     //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    //    => optionsBuilder.UseSqlServer("Server=(local);Database= FUNewsManagement;UID=sa;PWD=vietdeptrai123;TrustServerCertificate=True");
+    //{
+    //    var builder = new ConfigurationBuilder()
+    //    .SetBasePath(Directory.GetCurrentDirectory())
+    //    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+    //    IConfigurationRoot configuration = builder.Build();
+    //    //optionsBuilder.UseLoggerFactory(logger);
+    //    optionsBuilder.UseSqlServer(configuration.GetConnectionString("FUNewsManagement"));
+    //}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

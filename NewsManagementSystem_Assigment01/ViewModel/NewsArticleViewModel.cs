@@ -19,7 +19,7 @@ namespace NewsManagementSystem_Assigment01.ViewModel
         [Required]
         public string Headline { get; set; } = null!;
         [Display(Name = "Ngày tạo")]
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public DateTime? CreatedDate { get; set; }
 
         [Display(Name = "Nội dung tin tức")]
         [Required]

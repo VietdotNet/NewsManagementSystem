@@ -39,7 +39,7 @@
                         <td>@item.NewsTitle</td>
                         <td>@item.ModifiedDate?.ToString("dd/MM/yyyy HH:mm")</td>
                         <td style="white-space: nowrap;">
-                            <a asp-controller="News" asp-action="Details" asp-route-id="">Chi tiết</a>
+                            <a asp-controller="News" asp-action="Details" asp-route-id="@item.NewsArticleId">Chi tiết</a>
                         </td>
                         @if (User.FindFirstValue(ClaimTypes.Role) == "1")
                         {

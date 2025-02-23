@@ -1,0 +1,68 @@
+﻿@model NewsManagementSystem_Assigment01.ViewModel.ListUserViewModel
+
+<div class="news-list">
+    <h1>Danh sách người dùng</h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">ID</th>
+                <th scope="col">Tên người dùng</th>
+                <th scope="col">Email</th>
+                <th scope="col">Vai trò</th>
+                <th scope="col">Trạng thái</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model?.ListUser.Count() != 0)
+            {
+                int index = 1;
+                foreach (var item in Model?.ListUser)
+                {
+                    <tr>
+                        <th scope="row">@index</th>
+                        <td>@item.AccountId</td>
+                        <td>@item.AccountName</td>
+                        <td>@item.AccountEmail</td>
+                        <td>
+                            @(item.AccountRole == 1 ? "Staff" :
+                              item.AccountRole == 2 ? "Giảng viên" : "Không xác định")
+                        </td>
+                        <td>
+                            <span class="badge @(item.IsActive ? "bg-success" : "bg-danger")">
+                                @(item.IsActive ? "Hoạt động" : "Chưa kích hoạt")
+                            </span>
+                        </td>
+                        <td>
+                            <form asp-action="ToggleAccountStatus" method="post">
+                                <input type="hidden" name="id" value="@item.AccountId" />
+                                <button type="submit" class="btn btn-sm @(item.IsActive ? "btn-danger" : "btn-success")">
+                                    @(item.IsActive ? "Tắt hoạt động" : "Kích hoạt")
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    index++;
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="3" class="text-center">Không có người dùng nào.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .news-list {
+        margin: 20px auto;
+        max-width: 800px;
+    }
+
+        .news-list h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+</style>

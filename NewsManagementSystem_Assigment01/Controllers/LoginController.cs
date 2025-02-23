@@ -10,20 +10,21 @@ using NewsManagementSystem_Assigment01.ViewModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Principal;
+using NewsManagementSystem_Assigment01.Services;
 
-namespace NewsManagementSystem_Assigment01.Controllers.Authentication
+namespace NewsManagementSystem_Assigment01.Controllers
 {
     public class LoginController : Controller
     {
         private readonly IConfiguration _config;
         private readonly ILogger<LoginController> _logger;
-        private readonly FunewsManagementContext _context;
+        private readonly AccountService _service;
 
-        public LoginController(IConfiguration config, ILogger<LoginController> logger, FunewsManagementContext context)
+        public LoginController(IConfiguration config, ILogger<LoginController> logger, AccountService service)
         {
             _config = config;
             _logger = logger;
-            _context = context;
+            _service = service;
         }
 
         public IActionResult Index()
@@ -62,11 +63,11 @@ namespace NewsManagementSystem_Assigment01.Controllers.Authentication
                     CookieAuthenticationDefaults.AuthenticationScheme,
                     new ClaimsPrincipal(identity));
 
-                return RedirectToAction("SecurePage");
+                return RedirectToAction("Index", "Home");
             }
 
-            var user = _context.SystemAccounts.Where(x => (x.AccountEmail == model.Email) && (x.AccountPassword == model.Password)).FirstOrDefault();
-            if (user != null)
+            var user = _service.CheckLogin(model);
+            if (user != null && user.IsActive)
             {
                 var claims = new List<Claim>
                 {
@@ -80,7 +81,7 @@ namespace NewsManagementSystem_Assigment01.Controllers.Authentication
                     CookieAuthenticationDefaults.AuthenticationScheme,
                     new ClaimsPrincipal(identity));
 
-                return RedirectToAction("SecurePage");
+                return RedirectToAction("Index", "Home");
             }
             else
             {

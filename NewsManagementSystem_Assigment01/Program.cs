@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using NewsManagementSystem_Assigment01.Models;
+using NewsManagementSystem_Assigment01.Repositories;
+using NewsManagementSystem_Assigment01.Services;
 
 namespace NewsManagementSystem_Assigment01
 {
@@ -19,6 +21,16 @@ namespace NewsManagementSystem_Assigment01
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("FUNewsManagement"));
             });
+
+            builder.Services.AddScoped<IAccountRepository, AccountRepository>();  
+            builder.Services.AddScoped<AccountService>();
+            builder.Services.AddScoped<INewsRepository, NewsRepository>();
+            builder.Services.AddScoped<NewsService>();
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddScoped<CategoryService>();
+            builder.Services.AddScoped<ITagRepository, TagRepository>();
+            builder.Services.AddScoped<TagService>();
+
 
             // 3) Add Authentication with Cookies
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

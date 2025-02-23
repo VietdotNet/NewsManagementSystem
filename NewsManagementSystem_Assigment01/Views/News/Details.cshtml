@@ -1,0 +1,34 @@
+﻿@model NewsManagementSystem_Assigment01.Models.NewsArticle
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-3">
+        <div class="card-header bg-primary text-white text-center">
+            <h2 class="mb-0">@Model.NewsTitle</h2>
+        </div>
+        <div class="card-body p-4">
+            <h5 class="text-muted">@Model.Headline</h5>
+
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <p><strong>Ngày tạo:</strong> @Model.CreatedDate?.ToString("dd/MM/yyyy HH:mm")</p>
+                    <p><strong>Ngày chỉnh sửa cuối:</strong> @Model.ModifiedDate?.ToString("dd/MM/yyyy HH:mm")</p>
+                    <p><strong>Trạng thái:</strong> @(Model.NewsStatus == true ? "Đã xuất bản" : "Nháp")</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Nguồn tin tức:</strong> @Model.NewsSource</p>
+                    <p><strong>Chuyên mục:</strong> @Model?.Category?.CategoryName</p>
+                    <p><strong>Người tạo:</strong> @Model.CreatedBy?.AccountName</p> 
+                </div>
+            </div>
+
+            <hr>
+            <h5 class="mt-3">Nội dung tin tức</h5>
+            <p class="text-justify">@Model.NewsContent</p>
+        </div>
+
+        <div class="card-footer text-center">
+            <a asp-action="Edit" asp-route-id="@Model?.NewsArticleId" class="btn btn-warning mx-2">Chỉnh sửa</a>
+            <a asp-action="Index" asp-controller="Home" class="btn btn-secondary">Quay lại danh sách</a>
+        </div>
+    </div>
+</div>
