@@ -1,4 +1,5 @@
-﻿using NewsManagementSystem_Assigment01.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using NewsManagementSystem_Assigment01.Models;
 using NewsManagementSystem_Assigment01.Repositories;
 
 namespace NewsManagementSystem_Assigment01.Services
@@ -30,6 +31,16 @@ namespace NewsManagementSystem_Assigment01.Services
         public NewsArticle? FindById(string id)
         {
             return _repo.FindById(id);
+        }
+
+        public List<NewsArticle> GetNewsByAccountID(short accountId)
+        {
+            return _repo.GetNewsByAccountID(accountId);
+        }
+
+        public List<NewsArticle> StatisticNews(DateTime startDate, DateTime endDate)
+        {
+            return _repo.StatisticNews(startDate, endDate);
         }
     }
 }

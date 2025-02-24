@@ -5,5 +5,7 @@
         public string NewsArticleId { get; set; } = null!;
         public DateTime? ModifiedDate { get; set; }
         public string? NewsTitle { get; set; }
+
+        public bool? NewsStatus { get; set; } = true;
     }
 }

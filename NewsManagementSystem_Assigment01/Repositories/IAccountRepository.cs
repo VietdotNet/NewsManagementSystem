@@ -12,5 +12,7 @@ namespace NewsManagementSystem_Assigment01.Repositories
         SystemAccount? GetAccountById(short Id); 
 
         void AccountStatus(SystemAccount account);
+
+       void CreateNewAccount(SystemAccount account);
     }
 }

@@ -1,0 +1,48 @@
+﻿@model List<NewsManagementSystem_Assigment01.Models.NewsArticle>
+
+<h2>Thống kê báo cáo tin tức</h2>
+
+<form method="get">
+    <label for="startDate">Từ:</label>
+    <input type="date" id="startDate" name="startDate" value="@ViewBag.StartDate" required />
+
+    <label for="endDate">Đến:</label>
+    <input type="date" id="endDate" name="endDate" value="@ViewBag.EndDate" required />
+
+    <button type="submit" class="btn btn-primary">Lọc</button>
+</form>
+
+@if (Model.Count == 0)
+{
+    <p>No news found in this period.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tiêu đề</th>
+                <th>Ngày tạo</th>
+                <th>Category</th>
+                <th>Trạng thái</th>
+                <th>Người tạo</th>
+                <th>Người chỉnh sửa cuối</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var news in Model)
+            {
+                <tr>
+                    <td>@news.NewsArticleId</td>
+                    <td>@news.NewsTitle</td>
+                    <td>@news.CreatedDate?.ToString("dd/MM/yyyy")</td>
+                    <td>@news.Category?.CategoryName</td>
+                    <td>@news.NewsStatus</td>
+                    <td>@news.CreatedBy?.AccountName</td>
+                    <td>@news.ModifiedDate?.ToString("dd/MM/yyyy")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

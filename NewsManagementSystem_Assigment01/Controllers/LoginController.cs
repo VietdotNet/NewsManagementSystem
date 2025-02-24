@@ -91,6 +91,38 @@ namespace NewsManagementSystem_Assigment01.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> RegisterAsync()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RegisterAsync(RegisterViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var newAccount = new SystemAccount
+                {
+                    AccountId = model.AccountId,
+                    AccountName = model.AccountName,
+                    AccountEmail = model.AccountEmail,
+                    AccountRole = model.AccountRole,
+                    AccountPassword = model.AccountPassword,
+                    IsActive = true
+                };
+                 
+                _service.Register(newAccount);
+                TempData["SuccessMessage"] = "Đắng ký thành công!";
+                return RedirectToAction("Register");
+
+
+
+            }
+            return View();
+        }
+
+
         [Authorize]
         public IActionResult SecurePage()
         {
@@ -104,6 +136,30 @@ namespace NewsManagementSystem_Assigment01.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index");
         }
+
+        [HttpGet]
+        public IActionResult Profile()
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdString))
+            {
+                return NotFound("Không tìm thấy tài khoản");
+            }
+
+            if (!short.TryParse(userIdString, out short userId))
+            {
+                return BadRequest("ID người dùng không hợp lệ.");
+            }
+
+            var staff = _service.GetAccountById(userId);
+            if (staff == null)
+            {
+                return NotFound("Không tìm thấy thông tin nhân viên.");
+            }
+
+            return View(staff);
+        }
+
 
 
 

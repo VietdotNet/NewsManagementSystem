@@ -31,13 +31,38 @@
                         @if (User.FindFirstValue(ClaimTypes.Role) == "1")
                         {
                             <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Login" asp-action="Profile">Thông tin cá nhân</a>
+                            </li>
+                        }
+
+                        @if (User.FindFirstValue(ClaimTypes.Role) == "1")
+                        {
+                            <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="News" asp-action="Create">Tạo bài viết tin tức</a>
+                            </li>
+                        }
+                        @if (User.FindFirstValue(ClaimTypes.Role) == "1")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="News" asp-action="History">Lịch sử tạo tin tức</a>
                             </li>
                         }
                         @if (User.FindFirstValue(ClaimTypes.Role) == "Admin")
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="Admin" asp-action="ManageUser">Quản lý người dùng</a>
+                            </li>
+                        }
+                        @if (User.FindFirstValue(ClaimTypes.Role) == "Admin")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Login" asp-action="Register">Đăng ký người dùng mới</a>
+                            </li>
+                        }
+                        @if (User.FindFirstValue(ClaimTypes.Role) == "Admin")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Admin" asp-action="ReportStatistics">Thống kê</a>
                             </li>
                         }
                         

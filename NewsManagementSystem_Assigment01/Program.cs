@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using NewsManagementSystem_Assigment01.Models;
@@ -14,6 +15,8 @@ namespace NewsManagementSystem_Assigment01
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Lấy MailSettings từ cấu hình (appsettings.json)
+            builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
@@ -30,6 +33,8 @@ namespace NewsManagementSystem_Assigment01
             builder.Services.AddScoped<CategoryService>();
             builder.Services.AddScoped<ITagRepository, TagRepository>();
             builder.Services.AddScoped<TagService>();
+
+            builder.Services.AddTransient<SendMailService>();
 
 
             // 3) Add Authentication with Cookies

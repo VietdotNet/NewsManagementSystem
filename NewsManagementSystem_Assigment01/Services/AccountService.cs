@@ -33,6 +33,11 @@ namespace NewsManagementSystem_Assigment01.Services
             _repo.AccountStatus(account);
         }
 
+        public void Register(SystemAccount account)
+        {
+           _repo.CreateNewAccount(account);
+        }
+
 
     }
 }

@@ -24,7 +24,8 @@ namespace NewsManagementSystem_Assigment01.Controllers
                 {
                     NewsArticleId = n.NewsArticleId,
                     NewsTitle = n.NewsTitle,
-                    ModifiedDate = n.ModifiedDate
+                    ModifiedDate = n.ModifiedDate,
+                    NewsStatus = n.NewsStatus
                 })
                 .ToList();
 
@@ -46,5 +47,33 @@ namespace NewsManagementSystem_Assigment01.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        [HttpPost]
+        public IActionResult ToggleNewsStatus(string id)
+        {
+            var newsArticle = _context.NewsArticles.FirstOrDefault(n => n.NewsArticleId == id);
+            if (newsArticle == null)
+            {
+                return NotFound();
+            }
+
+            // Đảo ngược trạng thái NewsStatus
+            newsArticle.NewsStatus = !newsArticle.NewsStatus;
+            _context.SaveChanges();
+
+            // Lấy lại danh sách tin tức sau khi thay đổi
+            var newsList = _context.NewsArticles
+                .Select(n => new NewsItemViewModel
+                {
+                    NewsArticleId = n.NewsArticleId,
+                    NewsTitle = n.NewsTitle,
+                    ModifiedDate = n.ModifiedDate,
+                    NewsStatus = n.NewsStatus
+                })
+                .ToList();
+
+            return View("Index", new NewsListViewModel { NewsItems = newsList });
+        }
+
     }
 }

@@ -14,12 +14,14 @@ namespace NewsManagementSystem_Assigment01.Controllers
         private readonly NewsService _service;
         private readonly CategoryService _categoryService;
         private readonly ILogger<NewsController> _logger;
+        private readonly SendMailService _sendMailService;
 
-        public NewsController(NewsService service, CategoryService categoryService, ILogger<NewsController> logger)
+        public NewsController(NewsService service, CategoryService categoryService, ILogger<NewsController> logger, SendMailService sendMailService)
         {
             _service = service;
             _categoryService = categoryService;
             _logger = logger;
+            _sendMailService = sendMailService;
         }
 
         public IActionResult Index()
@@ -66,8 +68,19 @@ namespace NewsManagementSystem_Assigment01.Controllers
                     UpdatedById = short.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out short updatedById) ? updatedById : (short?)null,
                     ModifiedDate = DateTime.Now
                 };
+                var mailContent = new MailContent();
+                mailContent.To = "vietnq021103@gmail.com";
+                mailContent.Subject = newsArticle.NewsTitle;
+                mailContent.Body = "Được tạo bởi: " + User.FindFirstValue(ClaimTypes.Name) +
+                    "<br>Chi tiết tin tức: <a href='https://localhost:7260/News/Details/" + newsArticle.NewsArticleId + "'>Xem chi tiết</a>";
+
+
+                _sendMailService.SendMailAsync(mailContent);
 
                 _service.Create(newsArticle);
+
+                
+
                 return RedirectToAction("Index", "Home"); // Điều hướng về danh sách bài viết
             }
 
@@ -98,6 +111,7 @@ namespace NewsManagementSystem_Assigment01.Controllers
             }
             return RedirectToAction(nameof(Index), "Home");
         }
+
 
         [HttpGet]
         public IActionResult Edit(string id)
@@ -165,13 +179,27 @@ namespace NewsManagementSystem_Assigment01.Controllers
             return View(model);
         }
 
+
         public IActionResult Details(string id)
         {
             var newsArticle = _service.FindById(id);
             return View(newsArticle);
         }
 
+        [HttpGet]
+        public IActionResult History() 
+        {
+                var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrEmpty(userIdString))
+                {
+                    return NotFound("Không tìm thấy tài khoản.");
+                }
 
+                short userId = short.Parse(userIdString);
+                var newsList = _service.GetNewsByAccountID(userId);
+
+                return View(newsList);
+        }
 
     }
 }

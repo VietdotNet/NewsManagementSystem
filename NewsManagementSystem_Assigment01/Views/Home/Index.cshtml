@@ -20,16 +20,24 @@
                 <th scope="col">#</th>
                 <th scope="col">Tiêu đề</th>
                 <th scope="col">Ngày cập nhật</th>
+                @if (User.FindFirstValue(ClaimTypes.Role) == "1" || User.FindFirstValue(ClaimTypes.Role) == "Admin")
+                {
+                    <th scope="col">Trạng thái</th>
+                }
                 <th scope="col">Link</th>
                 @if (User.FindFirstValue(ClaimTypes.Role) == "1")
                 {
                     <th scope="col">Chỉnh sửa</th>
                     <th scope="col">Xóa</th>
-                }           
+                }
+                @if (User.FindFirstValue(ClaimTypes.Role) == "1")
+                {
+                    <th scope="col"></th>
+                }
             </tr>
         </thead>
         <tbody>
-            @if (Model.NewsItems != null && Model.NewsItems.Any())
+            @if (Model.NewsItems != null && Model.NewsItems.Any() && (User.FindFirstValue(ClaimTypes.Role) == "1" || User.FindFirstValue(ClaimTypes.Role) == "Admin"))
             {
                 int index = 1;
                 foreach (var item in Model.NewsItems)
@@ -37,10 +45,19 @@
                     <tr>
                         <th scope="row">@index</th>
                         <td>@item.NewsTitle</td>
-                        <td>@item.ModifiedDate?.ToString("dd/MM/yyyy HH:mm")</td>
+                        
+                            <td>@item.ModifiedDate?.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td style="white-space: nowrap;">
+                                <span class="badge @(item.NewsStatus == true ? "bg-success" : "bg-danger")">
+                                    @(item.NewsStatus == true ? "Đang phát hành" : "Ẩn")
+                                </span>
+                            </td>
+                        
+                        
                         <td style="white-space: nowrap;">
                             <a asp-controller="News" asp-action="Details" asp-route-id="@item.NewsArticleId">Chi tiết</a>
                         </td>
+
                         @if (User.FindFirstValue(ClaimTypes.Role) == "1")
                         {
                             <td style="white-space: nowrap;">
@@ -54,17 +71,45 @@
                             </td>
 
                         }
+                        @if (User.FindFirstValue(ClaimTypes.Role) == "1")
+                        {
+                            <td style="white-space: nowrap;">
+                                <form asp-action="ToggleNewsStatus" method="post">
+                                    <input type="hidden" name="id" value="@item.NewsArticleId" />
+                                    <button type="submit" class="btn btn-sm @(item.NewsStatus == true ? "btn-danger" : "btn-success")">
+                                        @(item.NewsStatus == true ? "Ẩn" : "Phát hành")
+                                    </button>
+                                </form>
+                            </td>
+                        }
+
 
                     </tr>
                     index++;
                 }
             }
-            else
+            @if (Model.NewsItems != null && User.FindFirstValue(ClaimTypes.Role) != "Admin" && User.FindFirstValue(ClaimTypes.Role) != "1")
+            {
+                int index = 1;
+                foreach (var item in Model.NewsItems.Where(x => x.NewsStatus == true))
+                {
+                    <tr>
+                        <th scope="row">@index</th>
+                        <td>@item.NewsTitle</td>
+                        <td>@item.ModifiedDate?.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td style="white-space: nowrap;">
+                            <a asp-controller="News" asp-action="Details" asp-route-id="@item.NewsArticleId">Chi tiết</a>
+                        </td>
+                    </tr>
+                    index++;
+                }
+            }
+          @*   else
             {
                 <tr>
                     <td colspan="3" class="text-center">Không có tin tức nào.</td>
                 </tr>
-            }
+            } *@
         </tbody>
     </table>
 </div>

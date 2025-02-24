@@ -133,4 +133,6 @@ public partial class FunewsManagementContext : DbContext
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 
 public DbSet<NewsManagementSystem_Assigment01.ViewModel.NewsArticleViewModel> NewsArticleViewModel { get; set; } = default!;
+
+public DbSet<NewsManagementSystem_Assigment01.ViewModel.RegisterViewModel> RegisterViewModel { get; set; } = default!;
 }

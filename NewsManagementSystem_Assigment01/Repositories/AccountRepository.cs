@@ -17,6 +17,12 @@ namespace NewsManagementSystem_Assigment01.Repositories
             _context.SaveChanges();
         }
 
+        public void CreateNewAccount(SystemAccount account)
+        {
+            _context.SystemAccounts.Add(account);
+            _context.SaveChanges();
+        }
+
         public SystemAccount? GetAccountById(short Id)
         {
             return _context.SystemAccounts.Find(Id);

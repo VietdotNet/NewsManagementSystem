@@ -1,0 +1,35 @@
+﻿@model List<NewsManagementSystem_Assigment01.Models.NewsArticle>
+
+<h2>Danh sách tin tức của bạn đã tạo</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tiêu đề</th>
+            <th>Ngày tạo</th>
+            <th>Ngày chỉnh sửa cuối</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var news in Model)
+        {
+            <tr>
+                <td>@news.NewsArticleId</td>
+                <td>@news.NewsTitle</td>
+                <td>@news.CreatedDate?.ToString("dd/MM/yyyy")</td>
+                <td>@news.ModifiedDate?.ToString("dd/MM/yyyy")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@news.NewsArticleId" class="btn btn-info">Xem</a>
+                    <a asp-action="Edit" asp-route-id="@news.NewsArticleId" class="btn btn-warning">Sửa</a>
+                    <a asp-controller="News" asp-action="Delete" asp-route-id="@news.NewsArticleId" method="post" class="btn btn-danger">Xóa</a>
+                    @* <form asp-controller="News" asp-action="Delete" asp-route-id="@news.NewsArticleId" method="post"
+                          onsubmit="return confirm('Bạn có chắc muốn xóa không?');">
+                        <button type="submit" class="btn btn-danger">Xóa</button>
+                    </form> *@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

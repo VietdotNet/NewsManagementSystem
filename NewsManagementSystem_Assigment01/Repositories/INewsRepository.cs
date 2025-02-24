@@ -9,5 +9,9 @@ namespace NewsManagementSystem_Assigment01.Repositories
         void Update(NewsArticle model);
         void Delete(NewsArticle model);
         NewsArticle? FindById(string id);
+
+        List<NewsArticle> GetNewsByAccountID(short accountId);
+
+        List<NewsArticle> StatisticNews(DateTime startDate, DateTime endDate);
     }
 }

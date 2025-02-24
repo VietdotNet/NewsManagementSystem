@@ -39,6 +39,22 @@ namespace NewsManagementSystem_Assigment01.Repositories
                            .FirstOrDefault(n => n.NewsArticleId == id);
         }
 
+        public List<NewsArticle> GetNewsByAccountID(short accountId)
+        {
+            return _context.NewsArticles
+            .Where(n => n.CreatedById == accountId) // Lọc theo AccountId
+            .OrderByDescending(n => n.CreatedDate) // Sắp xếp theo ngày mới nhất
+            .ToList();
+        }
 
+        public List<NewsArticle> StatisticNews(DateTime startDate, DateTime endDate)
+        {
+            return _context.NewsArticles
+            .Where(n => n.CreatedDate >= startDate && n.CreatedDate <= endDate)
+            .Include(x => x.CreatedBy)
+            .Include(n => n.Category)
+            .OrderByDescending(n => n.CreatedDate)
+            .ToList();
+        }
     }
 }
