@@ -76,6 +76,7 @@ namespace NewsManagementSystem_Assigment01.Controllers
                     new Claim(ClaimTypes.Role, user.AccountRole.ToString()),
                     new Claim(ClaimTypes.NameIdentifier, user.AccountId.ToString())
                 };
+                //XÁC THỰC NGƯỜI DÙNG
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 await HttpContext.SignInAsync(
                     CookieAuthenticationDefaults.AuthenticationScheme,
